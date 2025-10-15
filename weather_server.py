@@ -189,29 +189,34 @@ def recommend_clothing(weather: dict[str, Any]) -> dict[str, Any]:
         - footwear: Recommended footwear type
         - general_advice: Additional tips
     """
-    # Build prompt for OpenAI
-    prompt = f"""Based on the following weather conditions, provide clothing recommendations in JSON format:
+    # Build detailed prompt for OpenAI
+    prompt = f"""You are a professional clothing advisor. Analyze these EXACT weather conditions and provide appropriate clothing recommendations:
 
-Weather Data:
-- Temperature: {weather['temperature']}°C
-- Weather: {weather['weather_description']}
-- Wind Speed: {weather['wind_speed']} km/h
-- Humidity: {weather['humidity']}%
+CURRENT WEATHER CONDITIONS:
+Temperature: {weather['temperature']}°C
+Weather Condition: {weather['weather_description']}
+Wind Speed: {weather['wind_speed']} km/h
+Humidity: {weather['humidity']}%
 
-Please respond with ONLY a JSON object (no markdown, no code blocks) with this structure:
+IMPORTANT GUIDELINES:
+- For temperatures BELOW 0°C: Recommend heavy winter gear (thermal underwear, heavy coat, insulated boots)
+- For temperatures 0-10°C: Recommend medium layers (sweater, medium coat, closed shoes)
+- For temperatures 10-20°C: Recommend light layers (t-shirt, light jacket, comfortable shoes)
+- For temperatures ABOVE 20°C: Recommend light clothing (t-shirt, shorts, sandals/light shoes)
+- For RAIN/DRIZZLE: MUST include waterproof jacket, umbrella, waterproof footwear
+- For SNOW: MUST include heavy winter coat, waterproof boots, warm accessories
+- For HIGH WIND (>20 km/h): MUST include windbreaker
+- For CLEAR/SUNNY weather with temp >20°C: MUST include sunglasses, hat, sunscreen
+
+Respond with ONLY a JSON object (no markdown, no code blocks):
 {{
-    "layers": ["item1", "item2", "item3"],
-    "accessories": ["item1", "item2"],
-    "footwear": "footwear recommendation",
-    "general_advice": ["advice1", "advice2"]
+    "layers": ["specific clothing item 1", "specific clothing item 2"],
+    "accessories": ["specific accessory 1", "specific accessory 2"],
+    "footwear": "specific footwear recommendation",
+    "general_advice": ["specific advice 1", "specific advice 2"]
 }}
 
-Consider:
-- Temperature ranges for appropriate layers
-- Wind speed for wind protection
-- Weather conditions for rain/snow gear
-- Sun protection for clear weather
-- Practical, specific recommendations"""
+Base your recommendations STRICTLY on the temperature and weather conditions provided above."""
 
     try:
         # Check if OpenAI client is available
@@ -224,14 +229,14 @@ Consider:
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a helpful weather and clothing advisor. Provide practical, specific clothing recommendations based on weather data. Always respond with valid JSON only, no additional text or markdown."
+                    "content": "You are a professional clothing advisor. Your recommendations MUST match the exact weather conditions provided. Be specific and practical. Different weather conditions require different clothing. Always respond with valid JSON only."
                 },
                 {
                     "role": "user",
                     "content": prompt
                 }
             ],
-            temperature=0.7,
+            temperature=0.3,
             max_tokens=500
         )
 
