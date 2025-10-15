@@ -28,6 +28,13 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.pyre/
+
 # Virtual environments
 venv/
 env/

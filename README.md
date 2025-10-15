@@ -1,40 +1,58 @@
-# Weather and Clothing Recommendation MCP Server
+# Weather and Clothing Recommendation System
 
-An MCP (Model Context Protocol) server that provides weather information and clothing recommendations based on current weather conditions.
+An AI-powered MCP (Model Context Protocol) server that provides real-time weather information and intelligent clothing recommendations using OpenAI's GPT-4o-mini.
 
-## Features
+## 🌟 Features
 
-- **Weather Information**: Fetches real-time weather data for any city using the Open-Meteo API
-- **Clothing Recommendations**: Provides intelligent clothing suggestions based on temperature, wind, humidity, and weather conditions
-- **Activity Advice**: Generates structured prompts for AI assistants to provide activity-specific guidance
-- **Two Tools Available**:
-  - `get_weather`: Get current weather for a city
-  - `get_clothing_recommendation`: Get weather and clothing advice
-- **Prompt Template**: `weather_advice` - generates structured prompts with weather data
+- **🌤️ Real-Time Weather Data**: Fetches current weather from Open-Meteo API (no API key required)
+- **🤖 AI-Powered Recommendations**: Uses OpenAI GPT-4o-mini for intelligent clothing suggestions
+- **🎨 Beautiful Web Interface**: Modern, responsive FastAPI web application
+- **🔌 MCP Integration**: Works with AI assistants like Claude Desktop
+- **📱 Activity-Specific Advice**: Tailored recommendations for hiking, running, etc.
+- **🔄 Fallback Logic**: Continues working even when AI APIs are unavailable
 
-## Installation
+## 🚀 Quick Start
 
-1. Install dependencies:
+### 1. Installation
+
 ```bash
+# Clone the repository
+git clone https://github.com/Paulino-Cristovao/mcp_weather_and_cloth_recommendation.git
+cd mcp_weather_and_cloth_recommendation
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-## Usage
+### 2. Setup Environment Variables
 
-### Web Interface (Easiest - Recommended!)
+Create a `.env` file in the project root:
 
-Run the FastAPI web application with a beautiful GUI:
+```bash
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+**Note**: Get your OpenAI API key from [OpenAI Platform](https://platform.openai.com/api-keys)
+
+### 3. Run the Application
+
+#### Web Interface (Recommended!)
+
 ```bash
 python app.py
 ```
 
-Then open your browser to: **http://localhost:8000**
+Open your browser to: **http://localhost:8000**
 
-Features:
-- Beautiful, responsive web interface
-- Enter city name and activity
-- Get instant weather and clothing recommendations
-- Works on desktop and mobile
+![Web Interface](https://img.shields.io/badge/Interface-Beautiful-brightgreen)
+
+#### Command Line Test
+
+```bash
+python simple_test.py
+```
+
+## 📖 Usage Examples
 
 ### Quick Test (No MCP Required)
 
@@ -198,36 +216,52 @@ Please provide:
 4. Any alternative suggestions if conditions aren't ideal?
 ```
 
-## How It Works
+## 🏗️ Architecture
 
-1. **City Lookup**: Converts city names to coordinates using Open-Meteo Geocoding API
-2. **Weather Fetch**: Retrieves current weather data (temperature, wind, humidity, conditions)
-3. **Clothing Logic**: Analyzes weather to recommend:
-   - Appropriate layers based on temperature
-   - Wind-resistant gear for strong winds
-   - Waterproof items for rain/snow
-   - Sun protection for clear, warm weather
-4. **Structured Output**: Provides formatted data for AI assistants to give personalized advice
+```
+User Question → AI Assistant → MCP Client → MCP Server → APIs
+                                              ├─ Open-Meteo (Weather)
+                                              └─ OpenAI (Recommendations)
+```
 
-## API Used
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed architecture documentation.
 
-- **Open-Meteo**: Free weather API (no API key required)
-  - Geocoding API: Converts city names to coordinates
-  - Weather API: Provides current weather data
+## 🛠️ Technology Stack
 
-## Temperature-Based Recommendations
+- **Backend**: Python 3.8+, FastAPI
+- **AI**: OpenAI GPT-4o-mini
+- **Weather API**: Open-Meteo (free, no key required)
+- **MCP**: Model Context Protocol for AI integration
+- **Frontend**: HTML, CSS, JavaScript (embedded in FastAPI)
 
-- **Below 0°C**: Heavy winter gear, thermal layers, insulated boots
-- **0-10°C**: Medium coat, sweater, closed-toe shoes
-- **10-20°C**: Light jacket, comfortable shoes
-- **Above 20°C**: Light clothing, sun protection
+## 📦 Project Structure
 
-## Requirements
+```
+mcp_weather_and_cloth_recommendation/
+├── app.py                 # FastAPI web application
+├── weather_server.py      # MCP server implementation
+├── client_example.py      # MCP client demo
+├── simple_test.py         # Standalone testing script
+├── requirements.txt       # Python dependencies
+├── .env                   # Environment variables (create this)
+├── README.md              # This file
+└── ARCHITECTURE.md        # Architecture documentation
+```
 
-- Python 3.8+
-- httpx: For API requests
-- mcp: Model Context Protocol library
+## 🤝 Contributing
 
-## License
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-MIT
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 🙏 Acknowledgments
+
+- Weather data provided by [Open-Meteo](https://open-meteo.com/)
+- AI powered by [OpenAI](https://openai.com/)
+- Built with [FastAPI](https://fastapi.tiangolo.com/)
+
+## 📧 Contact
+
+Created by [Paulino Cristovao](https://github.com/Paulino-Cristovao)
