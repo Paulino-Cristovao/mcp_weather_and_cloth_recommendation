@@ -104,9 +104,10 @@ async def get_weather(latitude: float, longitude: float) -> dict[str, Any]:
 
 def get_weather_description(code: int) -> str:
     """
-    Convert a numeric weather code to a human-readable description.
+    Convert a numeric weather code to a human-readable description using AI.
 
-    Uses WMO Weather interpretation codes standard.
+    Uses OpenAI to interpret WMO Weather codes and provide natural descriptions.
+    Falls back to a standard dictionary if OpenAI is unavailable.
 
     Args:
         code: WMO weather code (0-99)
@@ -114,33 +115,60 @@ def get_weather_description(code: int) -> str:
     Returns:
         Text description of the weather condition
     """
-    weather_codes = {
-        0: "Clear sky",
-        1: "Mainly clear",
-        2: "Partly cloudy",
-        3: "Overcast",
-        45: "Foggy",
-        48: "Depositing rime fog",
-        51: "Light drizzle",
-        53: "Moderate drizzle",
-        55: "Dense drizzle",
-        61: "Slight rain",
-        63: "Moderate rain",
-        65: "Heavy rain",
-        71: "Slight snow",
-        73: "Moderate snow",
-        75: "Heavy snow",
-        77: "Snow grains",
-        80: "Slight rain showers",
-        81: "Moderate rain showers",
-        82: "Violent rain showers",
-        85: "Slight snow showers",
-        86: "Heavy snow showers",
-        95: "Thunderstorm",
-        96: "Thunderstorm with slight hail",
-        99: "Thunderstorm with heavy hail"
-    }
-    return weather_codes.get(code, "Unknown weather condition")
+    try:
+        # Check if OpenAI client is available
+        if openai_client is None:
+            raise ValueError("OpenAI API key not set")
+
+        # Use OpenAI to generate description
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a weather expert. Convert WMO weather codes to brief, natural weather descriptions. Respond with only the weather description, no extra text."
+                },
+                {
+                    "role": "user",
+                    "content": f"What is the weather condition for WMO code {code}? Provide a brief 2-4 word description."
+                }
+            ],
+            temperature=0.3,
+            max_tokens=20
+        )
+
+        description = response.choices[0].message.content.strip()
+        return description
+
+    except Exception:
+        # Fallback to hardcoded descriptions
+        weather_codes = {
+            0: "Clear sky",
+            1: "Mainly clear",
+            2: "Partly cloudy",
+            3: "Overcast",
+            45: "Foggy",
+            48: "Depositing rime fog",
+            51: "Light drizzle",
+            53: "Moderate drizzle",
+            55: "Dense drizzle",
+            61: "Slight rain",
+            63: "Moderate rain",
+            65: "Heavy rain",
+            71: "Slight snow",
+            73: "Moderate snow",
+            75: "Heavy snow",
+            77: "Snow grains",
+            80: "Slight rain showers",
+            81: "Moderate rain showers",
+            82: "Violent rain showers",
+            85: "Slight snow showers",
+            86: "Heavy snow showers",
+            95: "Thunderstorm",
+            96: "Thunderstorm with slight hail",
+            99: "Thunderstorm with heavy hail"
+        }
+        return weather_codes.get(code, "Unknown weather condition")
 
 
 def recommend_clothing(weather: dict[str, Any]) -> dict[str, Any]:
